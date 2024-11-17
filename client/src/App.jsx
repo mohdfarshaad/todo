@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Button, Input } from "./components";
+import { Button, Input } from "./components/index.js";
 
 function App() {
   const [newTodo, setNewTodo] = useState("");
 
   return (
-    <div className="flex flex-col p-5  items-center text-white h-screen min-w-max bg-black/90">
+    <div className="flex flex-col p-5  items-center text-white h-screen min-w-max bg-slate-800">
       <div className="flex flex-col md:flex-row md:pl-3">
         <Input
           type="text"

@@ -4,7 +4,7 @@ function Button({ label: buttonLabel, onClick: handleClick }) {
   return (
     <div>
       <button
-        className="px-10 md:px-8 bg-black/50  text-white py-2.5 rounded-md"
+        className="px-10 md:px-8 bg-slate-500  text-white py-4 rounded-md"
         onClick={handleClick}
         type="button"
       >

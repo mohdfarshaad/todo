@@ -10,7 +10,7 @@ function Input({
     <div>
       <input
         type={inputType}
-        className="mb-3 md:ml-3 md:mr-3 py-2 px-3 outline-none focus:outline-none text-black rounded-md"
+        className="mb-3 md:ml-3 md:mr-3 py-4 px-3 outline-none focus:outline-none text-black rounded-md"
         placeholder={labelText}
         value={inputValue}
         onChange={(event) => handleInputChange(event.target.value)}
