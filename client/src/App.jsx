@@ -7,15 +7,32 @@ function App() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [toast, setToast] = useState({ message: "", type: "" });
-  const [todo, setTodo] = useState([]);
+  const [todos, setTodo] = useState([]);
+
+  console.log(todos);
 
   useEffect(() => {
-    try {
-      const respone = getTodos();
-      setTodo(respone.data);
-    } catch (error) {
-      console.log(error);
+    if (toast.message) {
+      const timeout = setTimeout(() => {
+        setToast({ message: "", type: "" });
+      }, 2000);
+      return () => clearTimeout(timeout);
     }
+  }, [toast]);
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const respone = await getTodos();
+
+        setTodo(respone.data.data);
+      } catch (error) {
+        console.log(error);
+        return;
+      }
+    };
+
+    fetchTodos();
   }, [title, description]);
 
   const createTodo = async () => {
@@ -58,11 +75,20 @@ function App() {
         />
         <Button label="Add" onClick={createTodo} className="px-10" />
       </div>
-      <div className="flex flex-col p-4 ">
-        {todo.map((todo) => {
-          <h1>{todo.title}</h1>;
-          <p>{todo.description}</p>;
-        })}
+      <div className="mt-5 w-full max-w-3xl">
+        <h2 className="text-xl mb-3">Todos:</h2>
+        {Array.isArray(todos) && todos.length > 0 ? (
+          <ul>
+            {todos.map((todo) => (
+              <li key={todo._id} className="mb-2 p-2 bg-gray-700 rounded">
+                <strong>{todo.title}</strong>
+                {todo.description && <p>{todo.description}</p>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-400">No todos available.</p>
+        )}
       </div>
       <Toast
         message={toast.message}
