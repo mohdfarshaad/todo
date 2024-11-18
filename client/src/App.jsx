@@ -59,9 +59,11 @@ function App() {
   // };
 
   return (
-    <div className="flex flex-col p-5 items-center text-white h-screen min-w-max bg-slate-800">
-      <TodoForm />
-      <TodoList />
+    <div className="flex justify-center items-center w-full bg-zinc-800">
+      <div className="flex flex-col p-5 items-start justify-start text-white h-screen min-w-max bg-zinc-800">
+        <TodoForm />
+        <TodoList />
+      </div>
     </div>
   );
 }
