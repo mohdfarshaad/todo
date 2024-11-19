@@ -23,7 +23,7 @@ function TodoForm({ onClick: onClick, value: value, onChange: onChange }) {
 TodoForm.propTypes = {
   onClick: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
-  onChange: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default TodoForm;

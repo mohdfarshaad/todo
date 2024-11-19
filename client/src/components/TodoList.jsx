@@ -1,28 +1,35 @@
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, Save } from "lucide-react";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 function TodoList({
   value: value,
   onChange: onChange,
-  onUpdate: onUpdate,
   onDelete: onDelete,
-  readOnly: readOnly = false,
+  onSave: onSave,
 }) {
+  const [isEditing, setIsEditing] = useState(false);
   return (
-    <div className="flex space-x-2 p-4 bg-white rounded-lg">
+    <div className="flex space-x-2 p-4 bg-white rounded-lg mb-4">
       <input type="checkbox" className="w-5" />
       <input
         type="text"
-        className="w-max p-4  rounded-lg  outline-black border-gray border-2"
+        className="w-max p-4  rounded-lg text-black focus:outline-none border-gray border-2"
         value={value}
-        onChange={onChange}
-        readOnly={readOnly}
+        onChange={(e) => onChange(e.target.value)}
+        readOnly={!isEditing}
       />
+
       <button
-        onClick={onUpdate}
+        onClick={() => {
+          if (isEditing) {
+            onSave();
+          }
+          setIsEditing(!isEditing);
+        }}
         className="bg-white p-4 rounded-lg border-gray border-2 "
       >
-        <Pencil color="blue" />
+        {isEditing ? <Save color="green" /> : <Pencil color="blue" />}
       </button>
       <button
         onClick={onDelete}
@@ -37,9 +44,8 @@ function TodoList({
 TodoList.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  readOnly: PropTypes.bool.isRequired,
 };
 
 export default TodoList;
