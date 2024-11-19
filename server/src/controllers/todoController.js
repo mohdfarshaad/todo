@@ -49,9 +49,9 @@ const getTodoById = asyncHandler(async (req, res) => {
 
 const updateTodoById = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const { title, description } = req.body;
+  const { title } = req.body;
 
-  if (!title || !description) {
+  if (!title) {
     throw new ApiError(400, "Field is required");
   }
 
@@ -59,7 +59,7 @@ const updateTodoById = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Not found");
   }
 
-  const updatedTodo = await updateTodo(id, { title, description });
+  const updatedTodo = await updateTodo(id, { title });
 
   if (!updatedTodo) {
     throw new ApiError(500, "Something went wrong");
