@@ -14,7 +14,7 @@ function App() {
   const [toast, setToast] = useState({ message: "", type: "" });
   const [todos, setTodos] = useState([]);
   const [isEditingTodo, setIsEditingTodo] = useState(null);
-  const [isLoading, setIsLoding] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (toast.message) {
@@ -47,14 +47,16 @@ function App() {
     try {
       const response = await createNewTodo({ title });
       if (response) {
+        setIsLoading(true);
         setTodos((prevTodos) => [...prevTodos, response.data]);
         setToast({ message: "Todo added successfully", type: "success" });
-        setIsLoding(!isLoading);
         setTitle("");
       }
     } catch (error) {
       setToast({ message: "Something went wrong", type: "error" });
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
