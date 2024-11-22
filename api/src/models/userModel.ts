@@ -1,12 +1,18 @@
-import mongoose, { Model, Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
+import bcrypt from "bcrypt";
+import { ApiError } from "../utils/ApiError";
 
-export interface UserModel extends Document {
-  id: String;
+export interface IUser {
   email: string;
   password: string;
+  refreshToken?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const userSchema: Schema<UserModel> = new Schema(
+export interface IUserDocument extends IUser, Document {}
+
+const userSchema = new Schema<IUserDocument>(
   {
     email: {
       type: String,
@@ -20,8 +26,26 @@ const userSchema: Schema<UserModel> = new Schema(
       type: String,
       required: true,
     },
+
+    refreshToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
 
-export const User: Model<UserModel> = mongoose.model("User ", userSchema);
+userSchema.pre<IUserDocument>("save", async function (next) {
+  const user = this as IUserDocument;
+  if (!user.isModified("password")) {
+    return next();
+  }
+
+  try {
+    user.password = await bcrypt.hash(user.password, 10);
+    next();
+  } catch (error) {
+    next(error as ApiError);
+  }
+});
+
+export const User = mongoose.model<IUserDocument>("User ", userSchema);
