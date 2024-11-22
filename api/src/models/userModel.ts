@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcrypt";
 import { ApiError } from "../utils/ApiError";
+import jwt from "jsonwebtoken";
 
 export interface IUser {
   email: string;
@@ -10,7 +11,13 @@ export interface IUser {
   updatedAt: Date;
 }
 
-export interface IUserDocument extends IUser, Document {}
+interface IUserMethods {
+  isPasswordCorrect(password: string): Promise<boolean>;
+  generateAccessToken(): Promise<string>;
+  generateRefreshToken(): Promise<string>;
+}
+
+export interface IUserDocument extends IUser, Document, IUserMethods {}
 
 const userSchema = new Schema<IUserDocument>(
   {
@@ -47,5 +54,57 @@ userSchema.pre<IUserDocument>("save", async function (next) {
     next(error as ApiError);
   }
 });
+
+userSchema.methods.isPasswordCorrect = async function (
+  this: IUserDocument,
+  password: string
+): Promise<boolean> {
+  return await bcrypt.compare(password, this.password);
+};
+
+userSchema.methods.generateAccessToken = async function (
+  this: IUserDocument
+): Promise<string> {
+  if (!process.env.ACCESS_TOKEN_SECRET) {
+    throw new Error("ACCESS_TOKEN_SECRET is not defined");
+  }
+
+  if (!process.env.ACCESS_TOKEN_EXPIRY) {
+    throw new Error("ACCESS_TOKEN_EXPIRY is not defined");
+  }
+
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
+  );
+};
+
+userSchema.methods.generateRefreshToken = async function (
+  this: IUserDocument
+): Promise<string> {
+  if (!process.env.REFRESH_TOKEN_SECRET) {
+    throw new Error("REFRESH_TOKEN_SECRET is not defined");
+  }
+
+  if (!process.env.REFRESH_TOKEN_EXPIRY) {
+    throw new Error("REFRESH_TOKEN_EXPIRY is not defined");
+  }
+
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
 
 export const User = mongoose.model<IUserDocument>("User ", userSchema);
