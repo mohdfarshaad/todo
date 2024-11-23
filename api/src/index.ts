@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 import { app } from "./app";
-import { connectDB } from "./db";
+import { connectDB } from "./config/db";
 
 dotenv.config({});
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT;
 
 connectDB()
   .then(() => {
@@ -12,6 +12,6 @@ connectDB()
       console.log("App listening on Port : ", port);
     });
   })
-  .catch((error) => {
+  .catch((error: Error) => {
     console.log(error);
   });

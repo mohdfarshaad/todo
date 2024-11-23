@@ -1,23 +1,8 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import { ApiError } from "../utils/ApiError";
 import jwt from "jsonwebtoken";
-
-export interface IUser {
-  email: string;
-  password: string;
-  refreshToken?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface IUserMethods {
-  isPasswordCorrect(password: string): Promise<boolean>;
-  generateAccessToken(): Promise<string>;
-  generateRefreshToken(): Promise<string>;
-}
-
-export interface IUserDocument extends IUser, Document, IUserMethods {}
+import { IUserDocument } from "../types/user";
 
 const userSchema = new Schema<IUserDocument>(
   {
