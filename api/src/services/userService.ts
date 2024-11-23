@@ -7,7 +7,11 @@ export const createUser = async (
   try {
     const newUser = await User.create({ email, password });
     console.log("User created : ", newUser);
-    return newUser;
+    const user = await User.findById(newUser._id).select(
+      "-password -refreshToken"
+    );
+
+    return user as IUserDocument;
   } catch (error) {
     console.log("Error creating user : ", error);
     throw error;

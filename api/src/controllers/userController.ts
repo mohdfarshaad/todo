@@ -3,15 +3,7 @@ import { checkExistingUser, createUser } from "../services/userService";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 
-interface SignupBody {
-  email: string;
-  password: string;
-}
-
-export const signup = async (
-  req: Request<{}, {}, SignupBody>,
-  res: Response
-): Promise<void> => {
+export const signup = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
@@ -41,5 +33,19 @@ export const signup = async (
         message: "Internal Server Error",
       });
     }
+  }
+};
+
+export const signin = async (req: Request, res: Response): Promise<void> => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new ApiError(400, "All fileds are required");
+  }
+
+  const existingUser = await checkExistingUser(email);
+
+  if (!existingUser) {
+    throw new ApiError(400, "Not a  Registered user");
   }
 };
