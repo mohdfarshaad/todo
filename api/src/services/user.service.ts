@@ -7,7 +7,6 @@ export const createUser = async (
 ): Promise<SignupDTO> => {
   try {
     const newUser = await User.create({ email, password });
-    console.log("User created : ", newUser);
     const user = await User.findById(newUser._id).select(
       "-password -refreshToken"
     );

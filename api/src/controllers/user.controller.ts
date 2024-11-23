@@ -21,7 +21,7 @@ export const signup = asyncHandler(
       const existingUser = await checkExistingUser(email);
 
       if (existingUser) {
-        throw new ApiError(400, "User already exists");
+        throw new ApiError(409, "User already exists");
       }
 
       const user = createUser(email, password);
